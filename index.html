@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Basics Flashcards</title>
+<style>
+:root{--bg:#f5f6fa;--card:#fff;--text:#1d2433;--muted:#5f6b80;--accent:#4f46e5;--accent-text:#fff;--border:#dfe3ec;--ans:#eef2ff}
+@media (prefers-color-scheme:dark){:root{--bg:#10131c;--card:#1a1f2d;--text:#eef0f6;--muted:#9aa4b8;--accent:#8b85ff;--accent-text:#10131c;--border:#2b3245;--ans:#242a40}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:20px 16px 32px}
+h1{font-size:1.4rem;margin:8px 0 4px}
+.sub{color:var(--muted);margin:0 0 20px;font-size:.95rem}
+.prog{display:flex;justify-content:space-between;font-weight:600;font-size:.95rem;margin-bottom:8px}
+.bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:20px}
+.fill{height:100%;width:0;background:var(--accent);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;min-height:280px;display:flex;flex-direction:column;gap:16px}
+.tag{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.q{font-size:1.35rem;line-height:1.35;font-weight:600;margin:0}
+.a{background:var(--ans);border-radius:12px;padding:16px;line-height:1.5;font-size:1.05rem}
+.a[hidden]{display:none}
+.actions{display:flex;gap:12px;margin-top:20px}
+button{flex:1;font:inherit;font-weight:600;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;min-height:48px}
+button.primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+@media (min-width:600px){main{padding-top:48px}.card{padding:36px;min-height:320px}.q{font-size:1.6rem}h1{font-size:1.75rem}}
+@media (max-width:420px){.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<main>
+  <h1>AI Basics Flashcards</h1>
+  <p class="sub">Try to answer in your head, then reveal to check.</p>
+  <div class="prog"><span id="count"></span><span id="pct"></span></div>
+  <div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="card">
+    <div class="tag">Question</div>
+    <p class="q" id="question"></p>
+    <div class="a" id="answer" aria-live="polite" hidden></div>
+  </div>
+  <div class="actions">
+    <button class="primary" id="reveal">Reveal Answer</button>
+    <button id="next">Next</button>
+  </div>
+</main>
+<script>
+const CARDS = [
+  ["What is Artificial Intelligence (AI)?","The field of building computer systems that perform tasks normally requiring human intelligence, such as learning, reasoning, perception, and language understanding."],
+  ["What is Machine Learning?","A subset of AI where systems learn patterns from data to make predictions or decisions, instead of following explicitly programmed rules."],
+  ["What is the difference between supervised and unsupervised learning?","Supervised learning trains on labeled examples (input and correct output). Unsupervised learning finds structure, like clusters, in unlabeled data."],
+  ["What is a neural network?","A model made of layers of connected nodes (neurons) that transform inputs into outputs. Connection weights are adjusted during training."],
+  ["What is training data?","The set of examples a model learns from. Its quality, size, and diversity strongly affect how well the model performs."],
+  ["What is overfitting?","When a model memorizes the training data, noise included, and performs poorly on new, unseen data."],
+  ["What is Deep Learning?","Machine learning using neural networks with many layers, which can learn complex patterns in images, audio, and text."],
+  ["What is Natural Language Processing (NLP)?","The area of AI focused on enabling computers to understand, generate, and work with human language."],
+  ["What is Reinforcement Learning?","A method where an agent learns by interacting with an environment, receiving rewards or penalties for its actions."],
+  ["What is bias in AI?","Systematic unfairness in a model's outputs, often caused by skewed training data or flawed design, which can disadvantage certain groups."]
+];
+
+const $ = id => document.getElementById(id);
+let index = 0;
+
+function render() {
+  const total = CARDS.length;
+  $("question").textContent = CARDS[index][0];
+  $("answer").textContent = CARDS[index][1];
+  $("answer").hidden = true;
+  $("reveal").disabled = false;
+  $("count").textContent = "Card " + (index + 1) + " of " + total;
+  $("pct").textContent = Math.round((index + 1) / total * 100) + "%";
+  $("fill").style.width = ((index + 1) / total * 100) + "%";
+  $("next").textContent = index === total - 1 ? "Restart" : "Next";
+}
+
+$("reveal").addEventListener("click", () => {
+  $("answer").hidden = false;
+  $("reveal").disabled = true;
+});
+
+$("next").addEventListener("click", () => {
+  index = (index + 1) % CARDS.length;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
